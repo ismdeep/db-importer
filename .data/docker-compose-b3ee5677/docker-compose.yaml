@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0-oracle
+    environment:
+      MYSQL_ROOT_PASSWORD: dbimporter123456
+      MYSQL_DATABASE: dbimporter
+    ports:
+      - '127.0.0.1:45001:3306'
+    restart: always
