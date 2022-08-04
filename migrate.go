@@ -1,5 +1,7 @@
 package db_importer
 
+// Author: L. Jiang <l.jiang.1024@gmail.com>
+
 import (
 	"fmt"
 	"github.com/ismdeep/log"
@@ -34,12 +36,8 @@ type DBImporterMigrate struct {
 }
 
 const (
-	// MigrateStatusPending pending
-	MigrateStatusPending = "PENDING"
 	// MigrateStatusSuccess success
 	MigrateStatusSuccess = "SUCCESS"
-	// MigrateStatusFailed failed
-	MigrateStatusFailed = "FAILED"
 	// MigrateStatusSkipped skipped
 	MigrateStatusSkipped = "SKIPPED"
 )
@@ -122,11 +120,7 @@ func Migrate(configRoot string) error {
 		}
 
 		// 3. run import command
-		m := DBImporterMigrate{
-			ID:        fileName,
-			Status:    MigrateStatusPending,
-			ExecStart: time.Now(),
-		}
+		startTime := time.Now()
 		sqlF, err := os.Open(fmt.Sprintf("%v/sql/%v", configRoot, fileName))
 		if err != nil {
 			return err
@@ -148,9 +142,13 @@ func Migrate(configRoot string) error {
 				log.FieldErr(err))
 			return err
 		}
-		m.Status = MigrateStatusSuccess
-		m.ExecEnd = time.Now()
-		db.Create(&m)
+		db.Create(&DBImporterMigrate{
+			ID:        fileName,
+			Status:    MigrateStatusSuccess,
+			FailedMsg: "",
+			ExecStart: startTime,
+			ExecEnd:   time.Now(),
+		})
 	}
 
 	return nil
