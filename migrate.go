@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -54,7 +55,7 @@ func isSkipped(fileName string, skippedList []string) bool {
 
 func Migrate(configRoot string) error {
 	var conf s
-	var db *gorm.DB
+
 	v := viper.New()
 	v.AddConfigPath(configRoot)
 	v.SetConfigName("db-importer")
@@ -62,15 +63,20 @@ func Migrate(configRoot string) error {
 	if err := v.ReadInConfig(); err != nil {
 		return err
 	}
-
 	if err := v.Unmarshal(&conf); err != nil {
 		return err
 	}
+
+	var db *gorm.DB
 	switch conf.Dialect {
 	case "mysql", "mariadb":
 		dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?parseTime=true&loc=Local&charset=utf8mb4,utf8",
 			conf.Username, conf.Password, conf.Host, conf.Port, conf.Database)
-		conn, err := gorm.Open(mysql.Open(dsn))
+		conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix: "zzzz_",
+			},
+		})
 		if err != nil {
 			return err
 		}
