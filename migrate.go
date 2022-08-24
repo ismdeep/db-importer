@@ -4,16 +4,17 @@ package db_importer
 
 import (
 	"fmt"
-	"github.com/ismdeep/log"
-	"github.com/spf13/viper"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"sort"
 	"time"
+
+	"github.com/ismdeep/log"
+	"github.com/spf13/viper"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 type s struct {
@@ -107,9 +108,7 @@ func Migrate(configRoot string) error {
 			return err
 		}
 		if cnt >= 1 {
-			log.Warn("migrate",
-				log.String("info", "already migrated"),
-				log.String("name", fileName))
+			//log.Warn("migrate", log.String("info", "already migrated"), log.String("name", fileName))
 			continue
 		}
 
@@ -140,7 +139,7 @@ func Migrate(configRoot string) error {
 		cmd.Stdin = sqlF
 		cmd.Env = os.Environ()
 		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
+		// cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
 			log.Error("migrate",
 				log.String("info", "migrate failed"),

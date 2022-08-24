@@ -4,5 +4,5 @@ port: 45001
 database: dbimporter
 username: root
 password: dbimporter123456
-cli: /Users/ismdeep/Downloads/mysql-8.0.30-macos12-arm64/bin/mysql
+cli: /Users/ismdeep/Applications/mysql-8.0.30/bin/mysql
 skips: ['2022-08-03-001.sql']
